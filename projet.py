@@ -27,8 +27,7 @@ def prix(soup):
 
 def ville(soup):
     try:
-        # Ajuster le sélecteur en fonction de la structure HTML réelle
-        details_texte = soup.select_one('.product-identity-container').text.strip()
+        details_texte = soup.select_one('h2.mt-0').text.strip()
         # Trouver la dernière occurrence de ", " et extraire la ville
         index = details_texte.rfind(", ")
         if index == -1:
@@ -38,8 +37,25 @@ def ville(soup):
     except AttributeError:
         raise NonValide("La ville n'a pas été trouvée dans l'annonce")
 
+
+def get_caracteriques(soup):
+    caracteriques = {}
+    for caracterique in soup.select('row product-features my-3'):
+        key = caracterique.select_one('.col-6').text.strip()
+        value = caracterique.select_one('.col-6.text-right').text.strip()
+        caracteriques[key] = value
+    return caracteriques
+
+
+    
+
+
+
+
+
+
 # Exemple d'utilisation
-url = "https://www.immo-entre-particuliers.com/annonce-alpes-maritimes-le-cannet/409275-villa-sur-les-hauteurs-de-golfe-juan-avec-une-vue-mer-panoramique"
+url = "https://www.immo-entre-particuliers.com/annonce-loiret-la-chapelle-sur-aveyron/409230-grande-maison-familiale-de-247-m2-avec-jardin-grange-et-panneaux-solaires-au-coeur-du-village-de-la-chapelle-sur-aveyron-ecole-et-bus-scolaires-a-proximite"
 soup = getsoup(url)
 try:
     print(prix(soup))
@@ -50,3 +66,8 @@ try:
     print(ville(soup))
 except NonValide as e:
     print(e)
+
+print(get_caracteriques(soup))
+
+
+
